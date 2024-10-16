@@ -267,43 +267,40 @@ input:focus {
     </style>
 </head>
 <body>
-    <!-- <div class="container"> -->
-        <h1>S.I.P. Your Smart Way to Create Wealth</h1>
-        <div class="input-container">
-            <div class="input-group">
-                <div>
-                    <label class="label">Monthly Investment (₹):</label> 
-                    <input type="number" id="monthlyInvestment" value="5000" step="100" />
-                </div>
-                <div>
-                    <label class="label">Investment Period (Years):</label>
-                    <input type="number" id="investmentPeriod" value="35" step="1" />
-                </div>
-                <div>
-                    <label class="label">Expected Return (% per annum):</label>
-                    <input type="number" id="expectedReturn" value="9.5" step="0.1" />
-                </div>
+    <h1>S.I.P. Your Smart Way to Create Wealth</h1>
+    <div class="input-container">
+        <div class="input-group">
+            <div>
+                <label class="label">Monthly Investment (₹):</label> 
+                <input type="number" id="monthlyInvestment" value="5000" step="100" />
+            </div>
+            <div>
+                <label class="label">Investment Period (Years):</label>
+                <input type="number" id="investmentPeriod" value="35" step="1" />
+            </div>
+            <div>
+                <label class="label">Expected Return (% per annum):</label>
+                <input type="number" id="expectedReturn" value="9.5" step="0.1" />
             </div>
         </div>
-        
-    
-        <!-- Results Section -->
-        <div class="results-container">
-            <div class="result-box">
-                <p>Total Investment:</p>
-                <strong>₹<span id="totalInvestment">0</span></strong>
-            </div>
-            <div class="result-box">
-                <p>Future Value:</p>
-                <strong>₹<span id="futureValue">0</span></strong>
-            </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-container">
+        <div class="result-box">
+            <p>Total Investment:</p>
+            <strong>₹<span id="totalInvestment">0</span></strong>
         </div>
-    
-        <div class="chart-container">
-            <canvas id="sipChart"></canvas>
+        <div class="result-box">
+            <p>Future Value:</p>
+            <strong>₹<span id="futureValue">0</span></strong>
         </div>
-    <!-- </div> -->
-    
+    </div>
+
+    <div class="chart-container">
+        <canvas id="sipChart"></canvas>
+    </div>
+
     <script>
         // Function to format numbers into 'Lac' format
         function formatToLac(amount) {
@@ -331,9 +328,9 @@ input:focus {
 
         // Update chart
         function updateChart(chart, futureValues, investedAmounts, investmentPeriod) {
-            chart.data.labels = Array.from({ length: investmentPeriod * 12 + 1 }, (_, i) => Math.floor(i / 12));
-            chart.data.datasets[0].data = futureValues;
-            chart.data.datasets[1].data = investedAmounts;
+            chart.data.labels = Array.from({ length: investmentPeriod + 1 }, (_, i) => i);  // Update labels based on the investment period
+            chart.data.datasets[0].data = futureValues.slice(0, investmentPeriod * 12 + 1); // Update future values for the chart
+            chart.data.datasets[1].data = investedAmounts.slice(0, investmentPeriod * 12 + 1); // Update invested amounts for the chart
             chart.update();
         }
 
@@ -343,38 +340,34 @@ input:focus {
             document.getElementById('futureValue').textContent = formatToLac(futureValue);
         }
 
-        // Chart initialization
+        // Chart initialization as line chart
         const ctx = document.getElementById('sipChart').getContext('2d');
         const sipChart = new Chart(ctx, {
-            type: 'line',
+            type: 'line',  // Change to 'line' chart
             data: {
-                labels: [],
+                labels: [],  // Initially empty, will be updated based on investment period
                 datasets: [
                     {
                         label: 'Future Value',
                         data: [],
-                        borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
                         fill: true,
-                        tension: 0.1,
-                        pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Dots for the graph
-                        pointRadius: 4
                     },
                     {
                         label: 'Total Invested',
                         data: [],
-                        borderColor: 'rgba(54, 162, 235, 1)',
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
                         fill: true,
-                        tension: 0.1,
-                        pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Dots for the graph
-                        pointRadius: 4
                     }
                 ]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: false, // Allow chart to stretch
                 scales: {
                     x: {
                         title: {
@@ -382,7 +375,7 @@ input:focus {
                             text: 'Years'
                         },
                         ticks: {
-                            stepSize: 1,
+                            stepSize: 1,  // Ensure steps are whole numbers (years)
                         }
                     },
                     y: {
@@ -392,7 +385,7 @@ input:focus {
                         },
                         ticks: {
                             callback: function(value) {
-                                return formatToLac(value);
+                                return formatToLac(value);  // Format y-axis values to Lac
                             }
                         }
                     }
@@ -413,7 +406,7 @@ input:focus {
 
             const { futureValues, investedAmounts, investedAmount, futureValue } = calculateSIP(monthlyInvestment, investmentPeriod, expectedReturn);
 
-            updateChart(sipChart, futureValues, investedAmounts, investmentPeriod);
+            updateChart(sipChart, futureValues, investedAmounts, investmentPeriod); // Pass the investment period to update the chart
             updateResults(investedAmount, futureValue);
         }
 
