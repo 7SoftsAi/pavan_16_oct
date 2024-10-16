@@ -323,27 +323,32 @@ input:focus {
                 investedAmounts.push(investedAmount);
             }
 
-            return { futureValues, investedAmounts, investedAmount, futureValue };
+            return {
+                futureValues,
+                investedAmounts,
+                investedAmount,
+                futureValue
+            };
         }
 
-        // Update chart
+        // Update chart with new data
         function updateChart(chart, futureValues, investedAmounts, investmentPeriod) {
-            chart.data.labels = Array.from({ length: investmentPeriod + 1 }, (_, i) => i);  // Update labels based on the investment period
-            chart.data.datasets[0].data = futureValues.slice(0, investmentPeriod * 12 + 1); // Update future values for the chart
-            chart.data.datasets[1].data = investedAmounts.slice(0, investmentPeriod * 12 + 1); // Update invested amounts for the chart
+            chart.data.labels = Array.from({ length: investmentPeriod + 1 }, (_, i) => i);
+            chart.data.datasets[0].data = futureValues;
+            chart.data.datasets[1].data = investedAmounts;
             chart.update();
         }
 
-        // Update displayed Total Investment and Future Value
+        // Update result display
         function updateResults(investedAmount, futureValue) {
             document.getElementById('totalInvestment').textContent = formatToLac(investedAmount);
-            document.getElementById('futureValue').textContent = formatToLac(futureValue);
+            document.getElementById('futureValue').textContent = formatToLac(Math.round(futureValue));
         }
 
         // Chart initialization as line chart
         const ctx = document.getElementById('sipChart').getContext('2d');
         const sipChart = new Chart(ctx, {
-            type: 'line',  // Change to 'line' chart
+            type: 'line',  // Line chart
             data: {
                 labels: [],  // Initially empty, will be updated based on investment period
                 datasets: [
@@ -352,66 +357,126 @@ input:focus {
                         data: [],
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 2,
+                        borderWidth: 3,  // Increase line width for better visibility
+                        pointBackgroundColor: 'rgba(75, 192, 192, 1)',  // Add point markers
+                        pointBorderColor: '#fff',
+                        pointRadius: 4,  // Size of points on the line
                         fill: true,
+                        yAxisID: 'y',  // Use primary y-axis
                     },
                     {
                         label: 'Total Invested',
                         data: [],
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 2,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 3,  // Increase line width
+                        pointBackgroundColor: 'rgba(255, 99, 132, 1)',  // Add point markers
+                        pointBorderColor: '#fff',
+                        pointRadius: 4,  // Size of points on the line
                         fill: true,
+                        yAxisID: 'y1',  // Use secondary y-axis
                     }
                 ]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Allow chart to stretch
+                maintainAspectRatio: false,  // Allow chart to stretch
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'SIP Investment Growth Over Time',
+                        font: {
+                            size: 18,  // Increase title font size
+                            weight: 'bold',
+                        },
+                        padding: {
+                            top: 20,
+                            bottom: 20
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        labels: {
+                            font: {
+                                size: 14  // Increase font size for legend
+                            }
+                        }
+                    }
+                },
                 scales: {
                     x: {
                         title: {
                             display: true,
-                            text: 'Years'
+                            text: 'Years',
+                            font: {
+                                size: 14  // Increase font size for the x-axis label
+                            }
                         },
                         ticks: {
-                            stepSize: 1,  // Ensure steps are whole numbers (years)
+                            stepSize: 1,
+                            font: {
+                                size: 12  // Font size for x-axis ticks
+                            }
                         }
                     },
                     y: {
                         title: {
                             display: true,
-                            text: 'Amount (₹)'
+                            text: 'Future Value (₹)',
+                            font: {
+                                size: 14  // Increase font size for the y-axis label
+                            }
                         },
                         ticks: {
-                            callback: function(value) {
-                                return formatToLac(value);  // Format y-axis values to Lac
+                            font: {
+                                size: 12  // Font size for y-axis ticks
                             }
+                        }
+                    },
+                    y1: {
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Total Invested (₹)',
+                            font: {
+                                size: 14  // Increase font size for the secondary y-axis label
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 12  // Font size for y1-axis ticks
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false  // Do not draw grid lines on the secondary axis
                         }
                     }
                 }
             }
         });
 
-        // Event listeners for inputs
-        document.getElementById('monthlyInvestment').addEventListener('input', () => updateSIPChart());
-        document.getElementById('investmentPeriod').addEventListener('input', () => updateSIPChart());
-        document.getElementById('expectedReturn').addEventListener('input', () => updateSIPChart());
-
-        // Function to update the chart based on inputs
-        function updateSIPChart() {
+        // Calculate and update chart and results on input change
+        function calculateAndUpdate() {
             const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
             const investmentPeriod = parseInt(document.getElementById('investmentPeriod').value);
             const expectedReturn = parseFloat(document.getElementById('expectedReturn').value);
 
             const { futureValues, investedAmounts, investedAmount, futureValue } = calculateSIP(monthlyInvestment, investmentPeriod, expectedReturn);
 
-            updateChart(sipChart, futureValues, investedAmounts, investmentPeriod); // Pass the investment period to update the chart
+            // Update chart
+            updateChart(sipChart, futureValues, investedAmounts, investmentPeriod);
+
+            // Update results
             updateResults(investedAmount, futureValue);
         }
 
-        // Initialize the chart with default values
-        updateSIPChart();
+        // Event listeners for inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculateAndUpdate);
+        });
+
+        // Initial calculation
+        calculateAndUpdate();
     </script>
 </body>
 </html>
