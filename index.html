@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: white;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #007bff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .input-group .label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #007bff;
+            font-family: math;
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            max-width: 150px;
+            margin: 10px 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        input:focus {
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.5);
+            outline: none;
+        }
+
+        .results-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .result-box {
+            padding: 20px;
+            border: 1px solid #e0f0ff;
+            background-color: #e9f5ff;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+            box-shadow: 0 2px 6px rgba(0, 123, 255, 0.1);
+        }
+
+        .result-box strong {
+            color: #ff4d4f;
+            font-size: 24px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+
+            .result-box {
+                width: 90%;
+            }
+        }
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f4f8;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 2em;
+    color: rgba(54, 162, 235, 1);
+    margin-bottom: 20px;
+    text-align: center;
+    transition: color 0.3s ease;
+    font-family: fangsong
+}
+
+h1:hover {
+    color: #ff4d4f; /* Change color on hover */
+}
+
+.label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+.label:hover {
+    color: #ff4d4f; /* Change color on hover */
+}
+
+input {
+    padding: 10px;
+    width: 100%;
+    max-width: 150px;
+    margin: 10px 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+input:focus {
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+.results-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    font-weight: bold;
+    font-family: math;
+}
+
+.result-box {
+    padding: 20px;
+    border: 1px solid #e0f0ff;
+    background-color: #e9f5ff;
+    border-radius: 10px;
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+    margin: 10px;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.result-box:hover {
+    background-color: #d1eaff; /* Change background on hover */
+}
+
+.result-box strong {
+    color: #ff4d4f;
+    font-size: 24px;
+    transition: color 0.3s ease;
+}
+
+.result-box strong:hover {
+    color: #007bff; /* Change color on hover */
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    margin-top: 30px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 600px) {
+    .input-group {
+        flex-direction: column;
+    }
+
+    .result-box {
+        width: 90%;
+    }
+}
+.input-container {
+    background-color: #e9f7ff;
+    padding: 20px;
+    border: 5px solid rgba(75, 192, 192, 1);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.input-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.input-group div {
+    margin: 10px 0;
+    flex: 1;
+    padding: 0 10px;
+}
+
+.input-group .label {
+    font-weight: bold;
+    color: black;
+    margin-bottom: 10px;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+.input-group .label:hover {
+    color: #ff4d4f;
+}
+
+input {
+    padding: 10px;
+    width: 100%;
+    max-width: 200px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+input:focus {
+    box-shadow: 0 2px 10px rgba(0, 123, 255, 0.5);
+    border-color: #007bff;
+    outline: none;
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- <div class="container"> -->
+        <h1>S.I.P. Your Smart Way to Create Wealth</h1>
+        <div class="input-container">
+            <div class="input-group">
+                <div>
+                    <label class="label">Monthly Investment (₹):</label> 
+                    <input type="number" id="monthlyInvestment" value="5000" step="100" />
+                </div>
+                <div>
+                    <label class="label">Investment Period (Years):</label>
+                    <input type="number" id="investmentPeriod" value="35" step="1" />
+                </div>
+                <div>
+                    <label class="label">Expected Return (% per annum):</label>
+                    <input type="number" id="expectedReturn" value="9.5" step="0.1" />
+                </div>
+            </div>
+        </div>
+        
+    
+        <!-- Results Section -->
+        <div class="results-container">
+            <div class="result-box">
+                <p>Total Investment:</p>
+                <strong>₹<span id="totalInvestment">0</span></strong>
+            </div>
+            <div class="result-box">
+                <p>Future Value:</p>
+                <strong>₹<span id="futureValue">0</span></strong>
+            </div>
+        </div>
+    
+        <div class="chart-container">
+            <canvas id="sipChart"></canvas>
+        </div>
+    <!-- </div> -->
+    
+    <script>
+        // Function to format numbers into 'Lac' format
+        function formatToLac(amount) {
+            return amount.toLocaleString('en-IN');
+        }
+
+        // SIP calculation logic
+        function calculateSIP(monthlyInvestment, investmentPeriod, expectedReturn) {
+            const months = investmentPeriod * 12;
+            const monthlyRate = (1 + expectedReturn / 100) ** (1 / 12) - 1;
+            let futureValue = 0;
+            let investedAmount = 0;
+            const futureValues = [];
+            const investedAmounts = [];
+
+            for (let i = 1; i <= months; i++) {
+                investedAmount += monthlyInvestment;
+                futureValue = futureValue * (1 + monthlyRate) + monthlyInvestment;
+                futureValues.push(futureValue);
+                investedAmounts.push(investedAmount);
+            }
+
+            return { futureValues, investedAmounts, investedAmount, futureValue };
+        }
+
+        // Update chart
+        function updateChart(chart, futureValues, investedAmounts, investmentPeriod) {
+            chart.data.labels = Array.from({ length: investmentPeriod * 12 + 1 }, (_, i) => Math.floor(i / 12));
+            chart.data.datasets[0].data = futureValues;
+            chart.data.datasets[1].data = investedAmounts;
+            chart.update();
+        }
+
+        // Update displayed Total Investment and Future Value
+        function updateResults(investedAmount, futureValue) {
+            document.getElementById('totalInvestment').textContent = formatToLac(investedAmount);
+            document.getElementById('futureValue').textContent = formatToLac(futureValue);
+        }
+
+        // Chart initialization
+        const ctx = document.getElementById('sipChart').getContext('2d');
+        const sipChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Future Value',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        tension: 0.1,
+                        pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Dots for the graph
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Total Invested',
+                        data: [],
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: true,
+                        tension: 0.1,
+                        pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Dots for the graph
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Years'
+                        },
+                        ticks: {
+                            stepSize: 1,
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Amount (₹)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return formatToLac(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Event listeners for inputs
+        document.getElementById('monthlyInvestment').addEventListener('input', () => updateSIPChart());
+        document.getElementById('investmentPeriod').addEventListener('input', () => updateSIPChart());
+        document.getElementById('expectedReturn').addEventListener('input', () => updateSIPChart());
+
+        // Function to update the chart based on inputs
+        function updateSIPChart() {
+            const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
+            const investmentPeriod = parseInt(document.getElementById('investmentPeriod').value);
+            const expectedReturn = parseFloat(document.getElementById('expectedReturn').value);
+
+            const { futureValues, investedAmounts, investedAmount, futureValue } = calculateSIP(monthlyInvestment, investmentPeriod, expectedReturn);
+
+            updateChart(sipChart, futureValues, investedAmounts, investmentPeriod);
+            updateResults(investedAmount, futureValue);
+        }
+
+        // Initialize the chart with default values
+        updateSIPChart();
+    </script>
+</body>
+</html>
